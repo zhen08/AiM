@@ -1,0 +1,55 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="AiM.Views.ChatPage"
+             Title="Chat">
+    <Grid RowSpacing="6" x:Name="InputGrid">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="80"/>
+        </Grid.RowDefinitions>
+        <Label x:Name="testLabel"/>
+        <CollectionView
+            Grid.Row="0"
+            VerticalOptions="FillAndExpand"
+            SelectionMode="Single"
+            ItemsSource="{Binding ConversationData}"
+            ItemsLayout="VerticalList" >
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Grid Padding="10">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="60" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Label Grid.Column="0" Text="{Binding Sender}" FontAttributes="Bold" />
+                        <Editor Grid.Column="1" Text="{Binding Message}" AutoSize="TextChanges" IsReadOnly="True" />
+                    </Grid>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="60"/>
+            </Grid.ColumnDefinitions>
+            <ScrollView Grid.Column="0">
+                <Editor
+                    x:Name="PromptEditor"
+                    Placeholder="Enter your prompt here"
+                    Focused="PromptEditor_Focused"
+                    Unfocused="PromptEditor_Unfocused"
+                    HeightRequest="200" />
+            </ScrollView>
+            <Button Grid.Column="1"
+                x:Name="SendBtn"
+                Text="Send"
+                SemanticProperties.Hint="Counts the number of times you click"
+                Clicked="SendBtn_Clicked"
+                HorizontalOptions="Center" />
+        </Grid>
+    </Grid>
+</ContentPage>
