@@ -2,11 +2,33 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="AiM.Views.SettingsPage"
-             Title="SettingsPage">
-    <VerticalStackLayout>
-        <Label 
-            Text="Welcome to .NET MAUI!"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" />
+             Title="Settings">
+     <Shell.BackButtonBehavior>
+        <BackButtonBehavior IconOverride="back.png"/>
+    </Shell.BackButtonBehavior>
+   <VerticalStackLayout>
+        <Grid RowSpacing="10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="60"/>
+            </Grid.RowDefinitions>
+
+        <TableView Grid.Row="0">
+            <TableRoot>
+                <TableSection Title="Settings">
+                    <EntryCell x:Name="ApiKeyEntry" Label="OpenAI API Key" Placeholder="API_KEY" PropertyChanged="ApiKeyEntry_PropertyChanged"/>
+                </TableSection>
+            </TableRoot>
+        </TableView>
+        <Button Grid.Row="1"
+                x:Name="ResetBtn"
+                Text="Reset Agents"
+                FontSize="Large"
+                Clicked="ResetBtn_Clicked"
+                HorizontalOptions="FillAndExpand" />
+        </Grid>
     </VerticalStackLayout>
 </ContentPage>

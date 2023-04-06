@@ -8,26 +8,25 @@ namespace AiM.Services
 {
     public class ChatService
     {
-        const string OpenAI_API_Key = "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";
-
-
         private OpenAIAPI api;
         private Conversation chat;
 
-        public ObservableCollection<ChatData> ConversationData { get; private set; }
+        public ObservableCollection<ChatData> ConversationData { get; set; }
 
-        public ChatService(string systemMessage)
+        public ChatService(Agent agent)
         {
-            api = new OpenAIAPI(OpenAI_API_Key);
+            api = new OpenAIAPI(Preferences.Default.Get("OPENAI_API_KEY", ""));
             chat = api.Chat.CreateConversation();
             chat.Model = OpenAI_API.Models.Model.ChatGPTTurbo;
             ConversationData = new ObservableCollection<ChatData>();
-            if (String.IsNullOrEmpty(systemMessage))
+            chat.AppendSystemMessage(agent.SystemMessage);
+            if (agent.Examples != null)
             {
-//                chat.AppendSystemMessage("You are ChatGPT, a large language model trained by OpenAI. Answer as concisely as possible. Knowledge cutoff: {knowledge_cutoff} Current date: {current_date}\n");
-            } else
-            {
-                chat.AppendSystemMessage(systemMessage);
+                foreach (var example in agent.Examples)
+                {
+                    chat.AppendUserInput(example.UserInput);
+                    chat.AppendExampleChatbotOutput(example.ChatbotOutput);
+                }
             }
         }
 
@@ -35,8 +34,8 @@ namespace AiM.Services
         {
             ConversationData.Add(new ChatData("Me", message));
             chat.AppendUserInput(message);
-            var response = await chat.GetResponseFromChatbot();
-            ConversationData.Add(new ChatData("OpenAI", response.Trim('\n')));
+            var response = await chat.GetResponseFromChatbotAsync();
+            ConversationData.Add(new ChatData("AiM", response.Trim('\n')));
         }
     }
 }

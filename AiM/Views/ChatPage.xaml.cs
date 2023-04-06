@@ -1,16 +1,34 @@
-﻿using AiM.Services;
+﻿using AiM.Models;
+using AiM.Services;
 
 namespace AiM.Views;
 
+[QueryProperty(nameof(ChatAgent), "ChatAgent")]
 public partial class ChatPage : ContentPage
 {
+
+    Agent chatAgent;
+
+    public Agent ChatAgent
+    {
+        get => chatAgent;
+        set => chatAgent = value;
+    }
+
     private ChatService chatService;
     public ChatPage()
     {
         InitializeComponent();
-        chatService = new ChatService("");
-        BindingContext = chatService;
     }
+
+    protected override void OnNavigatedTo(NavigatedToEventArgs args)
+    {
+        base.OnNavigatedTo(args);
+        chatService = new ChatService(ChatAgent);
+        BindingContext = chatService;
+        Title = chatAgent.Description;
+    }
+
 
     async void SendBtn_Clicked(System.Object sender, System.EventArgs e)
     {
@@ -34,5 +52,13 @@ public partial class ChatPage : ContentPage
         {
             InputGrid.TranslateTo(0, 0, 50);
         }
+    }
+
+    async void ChatCollectionView_SelectionChanged(System.Object sender, Microsoft.Maui.Controls.SelectionChangedEventArgs e)
+    {
+        if (e.CurrentSelection.FirstOrDefault() is not ChatData chatData)
+            return;
+        await Clipboard.Default.SetTextAsync(chatData.Message);
+        await DisplayAlert("Information", "Message text copied to clipboard.", "OK");
     }
 }
