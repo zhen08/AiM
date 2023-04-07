@@ -30,9 +30,6 @@
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
                         <Label Grid.Column="0" Text="{Binding Sender}" FontAttributes="Bold" VerticalTextAlignment="Start" Padding="6"/>
-                        <!--
-                        <Editor Grid.Column="1" Text="{Binding Message}" AutoSize="TextChanges" IsReadOnly="True" VerticalTextAlignment="Start" />
-                        -->
                         <Label Grid.Column="1" Text="{Binding Message}" VerticalTextAlignment="Start" />
                     </Grid>
                 </DataTemplate>
