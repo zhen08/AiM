@@ -19,17 +19,15 @@ public partial class HomePage : ContentPage
     protected override async void OnNavigatedTo(NavigatedToEventArgs args)
     {
         base.OnNavigatedTo(args);
-        if (ChatAgents.Count == 0)
+        var agents = await database.GetAgentsAsync();
+        MainThread.BeginInvokeOnMainThread(() =>
         {
-            var agents = await database.GetAgentsAsync();
-            MainThread.BeginInvokeOnMainThread(() =>
+            ChatAgents.Clear();
+            foreach (var agent in agents)
             {
-                foreach (var agent in agents)
-                {
-                    ChatAgents.Add(agent);
-                }
-            });
-        }
+                ChatAgents.Add(agent);
+            }
+        });
     }
 
     async void SettingsBtn_Clicked(System.Object sender, System.EventArgs e)
@@ -44,6 +42,6 @@ public partial class HomePage : ContentPage
         await Shell.Current.GoToAsync(nameof(ChatPage), true, new Dictionary<string, object>
         {
             ["ChatAgent"] = agent
-        }) ;
+        });
     }
 }

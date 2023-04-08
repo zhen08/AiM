@@ -3,10 +3,10 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="AiM.Views.SettingsPage"
              Title="Settings">
-     <Shell.BackButtonBehavior>
+    <Shell.BackButtonBehavior>
         <BackButtonBehavior IconOverride="back.png"/>
     </Shell.BackButtonBehavior>
-   <VerticalStackLayout>
+    <VerticalStackLayout>
         <Grid RowSpacing="10">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
@@ -15,15 +15,16 @@
                 <RowDefinition Height="*" />
                 <RowDefinition Height="60"/>
             </Grid.RowDefinitions>
-
-        <TableView Grid.Row="0">
-            <TableRoot>
-                <TableSection Title="Settings">
-                    <EntryCell x:Name="ApiKeyEntry" Label="OpenAI API Key" Placeholder="API_KEY" PropertyChanged="ApiKeyEntry_PropertyChanged"/>
-                </TableSection>
-            </TableRoot>
-        </TableView>
-        <Button Grid.Row="1"
+            <TableView Grid.Row="0" Intent="Settings">
+                <TableRoot>
+                    <TableSection Title="Settings">
+                        <EntryCell x:Name="OpenAiApiKeyEntry" Label="OpenAI API Key" Placeholder="OPENAI API KEY" />
+                        <EntryCell x:Name="AzureCVEPEntry" Label="Azure CV Endpoint" Placeholder="AZURE CV END POINT"/>
+                        <EntryCell x:Name="AzureCVKeyEntry" Label="Azure CV API Key" Placeholder="AZURE CV API KEY" />
+                    </TableSection>
+                </TableRoot>
+            </TableView>
+            <Button Grid.Row="1"
                 x:Name="ResetBtn"
                 Text="Reset Agents"
                 FontSize="Large"

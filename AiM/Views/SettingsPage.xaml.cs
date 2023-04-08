@@ -6,21 +6,34 @@ namespace AiM.Views;
 public partial class SettingsPage : ContentPage
 {
 
-    AiMDatabase database;
-    public SettingsPage(AiMDatabase aiMDatabase)
+    AiMDatabase _database;
+    Settings _settings;
+
+    public SettingsPage(AiMDatabase database, Settings settings)
     {
         InitializeComponent();
-        ApiKeyEntry.Text = Preferences.Default.Get("OPENAI_API_KEY", "");
-        database = aiMDatabase;
+        _database = database;
+        _settings = settings;
     }
 
-    void ApiKeyEntry_PropertyChanged(System.Object sender, System.ComponentModel.PropertyChangedEventArgs e)
+    protected override void OnNavigatedTo(NavigatedToEventArgs args)
     {
-        Preferences.Default.Set("OPENAI_API_KEY", ApiKeyEntry.Text);
+        base.OnNavigatedTo(args);
+        OpenAiApiKeyEntry.Text = _settings.OpenAiApiKey;
+        AzureCVEPEntry.Text = _settings.AzureCVEndPoint;
+        AzureCVKeyEntry.Text = _settings.AzureCVApiKey;
+    }
+
+    protected override void OnNavigatedFrom(NavigatedFromEventArgs args)
+    {
+        base.OnNavigatedFrom(args);
+        _settings.OpenAiApiKey = OpenAiApiKeyEntry.Text;
+        _settings.AzureCVEndPoint = AzureCVEPEntry.Text;
+        _settings.AzureCVApiKey = AzureCVKeyEntry.Text;
     }
 
     async void ResetBtn_Clicked(System.Object sender, System.EventArgs e)
     {
-        await database.ResetAgentsAsync();
+        await _database.ResetAgentsAsync();
     }
 }

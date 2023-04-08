@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Net.Http;
 using AiM.Models;
 using OpenAI_API;
 using OpenAI_API.Chat;
@@ -8,33 +9,43 @@ namespace AiM.Services
 {
     public class ChatService
     {
-        private OpenAIAPI api;
-        private Conversation chat;
-
+        private OpenAIAPI _api;
+        private Conversation _chat;
         public ObservableCollection<ChatData> ConversationData { get; set; }
 
-        public ChatService(Agent agent)
+        public ChatService(IHttpClientFactory httpClientFactory)
         {
-            api = new OpenAIAPI(Preferences.Default.Get("OPENAI_API_KEY", ""));
-            chat = api.Chat.CreateConversation();
-            chat.Model = OpenAI_API.Models.Model.ChatGPTTurbo;
             ConversationData = new ObservableCollection<ChatData>();
-            chat.AppendSystemMessage(agent.SystemMessage);
+            _api = new OpenAIAPI(Preferences.Default.Get("OPENAI_API_KEY", ""));
+            _api.HttpClientFactory = httpClientFactory;
+        }
+
+        public void StartConversation(Agent agent)
+        {
+            _chat = _api.Chat.CreateConversation();
+            _chat.Model = OpenAI_API.Models.Model.ChatGPTTurbo;
+            _chat.AppendSystemMessage(agent.SystemMessage);
             if (agent.Examples != null)
             {
                 foreach (var example in agent.Examples)
                 {
-                    chat.AppendUserInput(example.UserInput);
-                    chat.AppendExampleChatbotOutput(example.ChatbotOutput);
+                    _chat.AppendUserInput(example.UserInput);
+                    _chat.AppendExampleChatbotOutput(example.ChatbotOutput);
                 }
             }
+        }
+
+        public void FinishConversation()
+        {
+            ConversationData.Clear();
+            _chat = null;
         }
 
         public async Task Send(string message)
         {
             ConversationData.Add(new ChatData("Me", message));
-            chat.AppendUserInput(message);
-            var response = await chat.GetResponseFromChatbotAsync();
+            _chat.AppendUserInput(message);
+            var response = await _chat.GetResponseFromChatbotAsync();
             ConversationData.Add(new ChatData("AiM", response.Trim('\n')));
         }
     }
