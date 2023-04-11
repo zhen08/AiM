@@ -4,7 +4,7 @@
              x:Class="AiM.Views.HomePage"
              xmlns:ios="clr-namespace:Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;assembly=Microsoft.Maui.Controls"
              ios:Page.UseSafeArea="True"
-            Title="AiM">
+             Title="AiM" >
     <Grid RowSpacing="10">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>

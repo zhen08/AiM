@@ -35,7 +35,8 @@
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>
-        <Grid Grid.Row="1">
+             <ActivityIndicator Grid.Row="0" x:Name="RunningIndicator" />
+       <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="40"/>

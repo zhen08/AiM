@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Net.Http;
+using AiM.Data;
 using AiM.Models;
 using OpenAI_API;
 using OpenAI_API.Chat;
@@ -13,10 +14,10 @@ namespace AiM.Services
         private Conversation _chat;
         public ObservableCollection<ChatData> ConversationData { get; set; }
 
-        public ChatService(IHttpClientFactory httpClientFactory)
+        public ChatService(IHttpClientFactory httpClientFactory, Settings settings)
         {
             ConversationData = new ObservableCollection<ChatData>();
-            _api = new OpenAIAPI(Preferences.Default.Get("OPENAI_API_KEY", ""));
+            _api = new OpenAIAPI(settings.OpenAiApiKey);
             _api.HttpClientFactory = httpClientFactory;
         }
 

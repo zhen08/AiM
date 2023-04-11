@@ -33,8 +33,8 @@ public partial class ChatPage : ContentPage
 
     protected override void OnNavigatedTo(NavigatedToEventArgs args)
     {
-        Title = chatAgent.Description;
         base.OnNavigatedTo(args);
+        Title = chatAgent.Description;
         _chatService.StartConversation(ChatAgent);
     }
     protected override void OnNavigatedFrom(NavigatedFromEventArgs args)
@@ -75,33 +75,39 @@ public partial class ChatPage : ContentPage
 
             if (photo != null)
             {
+                CameraBtn.IsEnabled = false;
+                RunningIndicator.IsRunning = true;
                 using (var sourceStream = await photo.OpenReadAsync())
                 {
-                    var image = PlatformImage.FromStream(sourceStream);
-                    if (image != null)
+                    using (var image = PlatformImage.FromStream(sourceStream))
                     {
-                        using (var newImage = image.Downsize(1024, true))
+                        if (image != null)
                         {
-                            var visionCredentials = new ApiKeyServiceClientCredentials(_settings.AzureCVApiKey);
-                            var client = new ComputerVisionClient(visionCredentials);
-                            client.Endpoint = _settings.AzureCVEndPoint;
-                            var ocrResult = await client.RecognizePrintedTextInStreamAsync(true, newImage.AsStream(), OcrLanguages.En);
-                            StringBuilder resultBuilder = new StringBuilder();
-                            foreach (var region in ocrResult.Regions)
+                            using (var newImage = image.Downsize(1024, true))
                             {
-                                foreach (var line in region.Lines)
+                                var visionCredentials = new ApiKeyServiceClientCredentials(_settings.AzureCVApiKey);
+                                var client = new ComputerVisionClient(visionCredentials);
+                                client.Endpoint = _settings.AzureCVEndPoint;
+                                var ocrResult = await client.RecognizePrintedTextInStreamAsync(true, newImage.AsStream());
+                                StringBuilder resultBuilder = new StringBuilder();
+                                foreach (var region in ocrResult.Regions)
                                 {
-                                    foreach (var word in line.Words)
+                                    foreach (var line in region.Lines)
                                     {
-                                        resultBuilder.Append(word.Text);
-                                        resultBuilder.Append(' ');
+                                        foreach (var word in line.Words)
+                                        {
+                                            resultBuilder.Append(word.Text);
+                                            resultBuilder.Append(' ');
+                                        }
                                     }
                                 }
+                                PromptEditor.Text = resultBuilder.ToString();
                             }
-                            PromptEditor.Text = resultBuilder.ToString();
                         }
                     }
                 }
+                RunningIndicator.IsRunning = false;
+                CameraBtn.IsEnabled = true;
             }
         }
     }
@@ -113,11 +119,13 @@ public partial class ChatPage : ContentPage
         var currentText = PromptEditor.Text;
         if ((!String.IsNullOrWhiteSpace(currentText)) && (!previousText.Equals(currentText)))
         {
+            RunningIndicator.IsRunning = true;
             previousText = currentText;
             PromptEditor.Text = "";
             PromptEditor.IsEnabled = false;
             await _chatService.Send(currentText);
             PromptEditor.IsEnabled = true;
+            RunningIndicator.IsRunning = false;
         }
     }
 }
