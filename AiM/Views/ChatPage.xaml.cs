@@ -9,24 +9,30 @@ using Microsoft.Maui.Graphics.Platform;
 
 namespace AiM.Views;
 
-[QueryProperty(nameof(ChatAgent), "ChatAgent")]
-public partial class ChatPage : ContentPage
+public partial class ChatPage : ContentPage, IQueryAttributable
 {
 
-    Agent chatAgent;
-    Settings _settings;
+    Agent _chatAgent;
+    string _prompt;
 
-    public Agent ChatAgent
+    public void ApplyQueryAttributes(IDictionary<string, object> query)
     {
-        get => chatAgent;
-        set => chatAgent = value;
+        if (query.ContainsKey("ChatAgent"))
+        {
+            _chatAgent = query["ChatAgent"] as Agent;
+            query.Remove("ChatAgent");
+        }
+        if (query.ContainsKey("Prompt"))
+        {
+            _prompt = query["Prompt"] as string;
+            query.Remove("Prompt");
+        }
     }
 
     private ChatService _chatService;
-    public ChatPage(Settings settings, ChatService chatService)
+    public ChatPage(ChatService chatService)
     {
         InitializeComponent();
-        _settings = settings;
         _chatService = chatService;
         BindingContext = _chatService;
     }
@@ -34,13 +40,17 @@ public partial class ChatPage : ContentPage
     protected override void OnNavigatedTo(NavigatedToEventArgs args)
     {
         base.OnNavigatedTo(args);
-        Title = chatAgent.Description;
-        _chatService.StartConversation(ChatAgent);
+        Title = _chatAgent.Description;
+        _chatService.StartConversation(_chatAgent);
+        CameraBtn.IsEnabled = MediaPicker.Default.IsCaptureSupported;
     }
+
     protected override void OnNavigatedFrom(NavigatedFromEventArgs args)
     {
         base.OnNavigatedFrom(args);
         _chatService.FinishConversation();
+        _chatAgent = null;
+        _prompt = null;
     }
 
     void PromptEditor_Focused(System.Object sender, Microsoft.Maui.Controls.FocusEventArgs e)
@@ -69,47 +79,7 @@ public partial class ChatPage : ContentPage
 
     async void CameraBtn_Clicked(System.Object sender, System.EventArgs e)
     {
-        if (MediaPicker.Default.IsCaptureSupported)
-        {
-            FileResult photo = await MediaPicker.Default.CapturePhotoAsync();
-
-            if (photo != null)
-            {
-                CameraBtn.IsEnabled = false;
-                RunningIndicator.IsRunning = true;
-                using (var sourceStream = await photo.OpenReadAsync())
-                {
-                    using (var image = PlatformImage.FromStream(sourceStream))
-                    {
-                        if (image != null)
-                        {
-                            using (var newImage = image.Downsize(1024, true))
-                            {
-                                var visionCredentials = new ApiKeyServiceClientCredentials(_settings.AzureCVApiKey);
-                                var client = new ComputerVisionClient(visionCredentials);
-                                client.Endpoint = _settings.AzureCVEndPoint;
-                                var ocrResult = await client.RecognizePrintedTextInStreamAsync(true, newImage.AsStream());
-                                StringBuilder resultBuilder = new StringBuilder();
-                                foreach (var region in ocrResult.Regions)
-                                {
-                                    foreach (var line in region.Lines)
-                                    {
-                                        foreach (var word in line.Words)
-                                        {
-                                            resultBuilder.Append(word.Text);
-                                            resultBuilder.Append(' ');
-                                        }
-                                    }
-                                }
-                                PromptEditor.Text = resultBuilder.ToString();
-                            }
-                        }
-                    }
-                }
-                RunningIndicator.IsRunning = false;
-                CameraBtn.IsEnabled = true;
-            }
-        }
+        await Shell.Current.GoToAsync(nameof(OcrPage));
     }
 
     string previousText = "";
@@ -123,7 +93,9 @@ public partial class ChatPage : ContentPage
             previousText = currentText;
             PromptEditor.Text = "";
             PromptEditor.IsEnabled = false;
+            DeviceDisplay.Current.KeepScreenOn = true;
             await _chatService.Send(currentText);
+            DeviceDisplay.Current.KeepScreenOn = false;
             PromptEditor.IsEnabled = true;
             RunningIndicator.IsRunning = false;
         }

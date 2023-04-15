@@ -4,10 +4,19 @@ using AiM.Models;
 
 namespace AiM.Views;
 
-public partial class HomePage : ContentPage
+public partial class HomePage : ContentPage, IQueryAttributable
 {
     AiMDatabase database;
     public ObservableCollection<Agent> ChatAgents { get; set; } = new();
+
+    public async void ApplyQueryAttributes(IDictionary<string, object> query)
+    {
+        if (query.ContainsKey("Refresh"))
+        {
+            query.Remove("Refresh");
+            await RefreshAgents();
+        }
+    }
 
     public HomePage(AiMDatabase aiMDatabase)
     {
@@ -19,6 +28,13 @@ public partial class HomePage : ContentPage
     protected override async void OnNavigatedTo(NavigatedToEventArgs args)
     {
         base.OnNavigatedTo(args);
+        if (ChatAgents.Count == 0)
+        {
+            await RefreshAgents();
+        }
+    }
+    async Task RefreshAgents()
+    {
         var agents = await database.GetAgentsAsync();
         MainThread.BeginInvokeOnMainThread(() =>
         {
@@ -39,9 +55,11 @@ public partial class HomePage : ContentPage
     {
         if (e.CurrentSelection.FirstOrDefault() is not Agent agent)
             return;
+        AgentsCollectionView.SelectedItem = null;
         await Shell.Current.GoToAsync(nameof(ChatPage), true, new Dictionary<string, object>
         {
             ["ChatAgent"] = agent
         });
     }
+
 }

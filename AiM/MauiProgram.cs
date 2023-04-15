@@ -27,10 +27,11 @@ public static class MauiProgram
 
 		builder.Services.AddSingleton<HomePage>();
         builder.Services.AddSingleton<ChatPage>();
-        builder.Services.AddSingleton<SettingsPage>();
+        builder.Services.AddTransient<SettingsPage>();
+        builder.Services.AddTransient<OcrPage>();
 
 #if DEBUG
-		builder.Logging.AddDebug();
+        builder.Logging.AddDebug();
 #endif
         return builder.Build();
 	}

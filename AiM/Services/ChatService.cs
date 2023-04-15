@@ -46,9 +46,15 @@ namespace AiM.Services
         {
             ConversationData.Add(new ChatData("Me", message));
             _chat.AppendUserInput(message);
-            var response = await _chat.GetResponseFromChatbotAsync();
-            ConversationData.Add(new ChatData("AiM", response.Trim('\n')));
-        }
+            try
+            {
+                var response = await _chat.GetResponseFromChatbotAsync();
+                ConversationData.Add(new ChatData("AiM", response.Trim('\n')));
+            } catch(Exception ex)
+            {
+                ConversationData.Add(new ChatData("Exception", ex.ToString()));
+            }
+        } 
     }
 }
 
