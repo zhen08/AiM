@@ -5,10 +5,20 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:local="clr-namespace:AiM.Views"
     Shell.FlyoutBehavior="Disabled">
-    <ShellContent
-        Title="AiM"
-        ContentTemplate="{DataTemplate local:HomePage}"
-        Route="Home"
-        />
+    <TabBar>
+       <Tab Title="Chat"
+            Icon="chat.png"
+            x:Name="homepage">
+           <ShellContent ContentTemplate="{DataTemplate local:HomePage}" />
+       </Tab>
+       <Tab Title="Image"
+            Icon="image.png">
+           <ShellContent ContentTemplate="{DataTemplate local:ImageCreationPage}" />
+       </Tab>
+       <Tab Title="Settings"
+            Icon="settings.png">
+           <ShellContent ContentTemplate="{DataTemplate local:SettingsPage}" />
+       </Tab>
+    </TabBar>
 </Shell>
 

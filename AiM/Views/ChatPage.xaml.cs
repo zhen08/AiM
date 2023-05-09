@@ -3,8 +3,6 @@ using System.Text;
 using AiM.Data;
 using AiM.Models;
 using AiM.Services;
-using Microsoft.Azure.CognitiveServices.Vision.ComputerVision;
-using Microsoft.Azure.CognitiveServices.Vision.ComputerVision.Models;
 using Microsoft.Maui.Graphics.Platform;
 
 namespace AiM.Views;
@@ -20,7 +18,6 @@ public partial class ChatPage : ContentPage, IQueryAttributable
         if (query.ContainsKey("ChatAgent"))
         {
             _chatAgent = query["ChatAgent"] as Agent;
-            query.Remove("ChatAgent");
         }
         if (query.ContainsKey("Prompt"))
         {
@@ -42,7 +39,6 @@ public partial class ChatPage : ContentPage, IQueryAttributable
         base.OnNavigatedTo(args);
         Title = _chatAgent.Description;
         _chatService.StartConversation(_chatAgent);
-        CameraBtn.IsEnabled = MediaPicker.Default.IsCaptureSupported;
     }
 
     protected override void OnNavigatedFrom(NavigatedFromEventArgs args)
@@ -73,18 +69,24 @@ public partial class ChatPage : ContentPage, IQueryAttributable
     {
         if (e.CurrentSelection.FirstOrDefault() is not ChatData chatData)
             return;
+        ChatCollectionView.SelectedItem = null;
         await Clipboard.Default.SetTextAsync(chatData.Message);
         await DisplayAlert("Information", "Message text copied to clipboard.", "OK");
     }
 
-    async void CameraBtn_Clicked(System.Object sender, System.EventArgs e)
+    async void SendBtn_Clicked(System.Object sender, System.EventArgs e)
     {
-        await Shell.Current.GoToAsync(nameof(OcrPage));
+        await SendChat();
     }
 
     string previousText = "";
 
     async void PromptEditor_Completed(System.Object sender, System.EventArgs e)
+    {
+        await SendChat();
+    }
+
+    async Task SendChat()
     {
         var currentText = PromptEditor.Text;
         if ((!String.IsNullOrWhiteSpace(currentText)) && (!previousText.Equals(currentText)))

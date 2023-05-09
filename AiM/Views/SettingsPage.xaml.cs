@@ -35,6 +35,6 @@ public partial class SettingsPage : ContentPage
     async void ResetBtn_Clicked(System.Object sender, System.EventArgs e)
     {
         await _database.ResetAgentsAsync();
-        await Shell.Current.GoToAsync("..", true, new Dictionary<string, object> { ["Refresh"] = true });
+        await DisplayAlert("Information", "Chat agent list will be updated after App reload.", "OK");
     }
 }

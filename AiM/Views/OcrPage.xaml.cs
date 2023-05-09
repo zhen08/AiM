@@ -11,8 +11,8 @@ public partial class OcrPage : ContentPage
     Settings _settings;
 
     public OcrPage(Settings settings)
-	{
-		InitializeComponent();
+    {
+        InitializeComponent();
         _settings = settings;
     }
 
@@ -31,7 +31,12 @@ public partial class OcrPage : ContentPage
                     {
                         using (var newImage = image.Downsize(1024, true))
                         {
-                            OcrImage.Source = ImageSource.FromStream(()=> sourceStream);
+                            MainThread.BeginInvokeOnMainThread(() =>
+                            {
+                                var memStream = new MemoryStream();
+                                newImage.AsStream().CopyTo(memStream);
+                                OcrImage.Source = ImageSource.FromStream(() => memStream);
+                            });
                             var visionCredentials = new ApiKeyServiceClientCredentials(_settings.AzureCVApiKey);
                             var client = new ComputerVisionClient(visionCredentials);
                             client.Endpoint = _settings.AzureCVEndPoint;
@@ -52,11 +57,13 @@ public partial class OcrPage : ContentPage
                                     }
                                 }
                                 _prompt = resultBuilder.ToString();
-                            } catch(Exception ex)
+                            }
+                            catch (Exception ex)
                             {
                                 _prompt = ex.ToString();
                             }
                         }
+
                         RunningIndicator.IsVisible = false;
                     }
                 }

@@ -3,9 +3,6 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="AiM.Views.SettingsPage"
              Title="Settings">
-    <Shell.BackButtonBehavior>
-        <BackButtonBehavior IconOverride="back.png"/>
-    </Shell.BackButtonBehavior>
     <VerticalStackLayout>
         <Grid RowSpacing="10">
             <Grid.ColumnDefinitions>

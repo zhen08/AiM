@@ -3,9 +3,6 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="AiM.Views.ChatPage"
              Title="Chat">
-    <Shell.BackButtonBehavior>
-        <BackButtonBehavior IconOverride="back.png"/>
-    </Shell.BackButtonBehavior>
     <Grid RowSpacing="6" x:Name="InputGrid">
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
@@ -35,8 +32,8 @@
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>
-             <ActivityIndicator Grid.Row="0" x:Name="RunningIndicator" />
-       <Grid Grid.Row="1">
+        <ActivityIndicator Grid.Row="0" x:Name="RunningIndicator" />
+        <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="40"/>
@@ -54,10 +51,10 @@
                     AutoSize="TextChanges" />
             </ScrollView>
             <Button Grid.Column="1"
-                    x:Name="CameraBtn"
-                    ImageSource="camera.png"
+                    x:Name="SendBtn"
+                    ImageSource="send.png"
                     BackgroundColor="Transparent"
-                    Clicked="CameraBtn_Clicked"
+                    Clicked="SendBtn_Clicked"
                     HorizontalOptions="Center" />
         </Grid>
     </Grid>
