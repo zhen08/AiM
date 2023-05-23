@@ -8,12 +8,10 @@ namespace AiM.Views;
 public partial class OcrPage : ContentPage
 {
     string _prompt;
-    Settings _settings;
-
-    public OcrPage(Settings settings)
+ 
+    public OcrPage()
     {
         InitializeComponent();
-        _settings = settings;
     }
 
     protected override async void OnNavigatedTo(NavigatedToEventArgs args)
@@ -37,9 +35,9 @@ public partial class OcrPage : ContentPage
                                 newImage.AsStream().CopyTo(memStream);
                                 OcrImage.Source = ImageSource.FromStream(() => memStream);
                             });
-                            var visionCredentials = new ApiKeyServiceClientCredentials(_settings.AzureCVApiKey);
+                            var visionCredentials = new ApiKeyServiceClientCredentials(Settings.AzureCVApiKey);
                             var client = new ComputerVisionClient(visionCredentials);
-                            client.Endpoint = _settings.AzureCVEndPoint;
+                            client.Endpoint = Settings.AzureCVEndPoint;
                             RunningIndicator.IsVisible = true;
                             try
                             {

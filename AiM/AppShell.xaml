@@ -6,6 +6,10 @@
     xmlns:local="clr-namespace:AiM.Views"
     Shell.FlyoutBehavior="Disabled">
     <TabBar>
+       <Tab Title="News"
+            Icon="news.png">
+           <ShellContent ContentTemplate="{DataTemplate local:NewsPage}" />
+       </Tab>
        <Tab Title="Chat"
             Icon="chat.png"
             x:Name="homepage">

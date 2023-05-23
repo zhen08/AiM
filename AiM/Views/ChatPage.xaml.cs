@@ -10,14 +10,14 @@ namespace AiM.Views;
 public partial class ChatPage : ContentPage, IQueryAttributable
 {
 
-    Agent _chatAgent;
+    ChatPrompt _chatAgent;
     string _prompt;
 
     public void ApplyQueryAttributes(IDictionary<string, object> query)
     {
         if (query.ContainsKey("ChatAgent"))
         {
-            _chatAgent = query["ChatAgent"] as Agent;
+            _chatAgent = query["ChatAgent"] as ChatPrompt;
         }
         if (query.ContainsKey("Prompt"))
         {
@@ -37,7 +37,7 @@ public partial class ChatPage : ContentPage, IQueryAttributable
     protected override void OnNavigatedTo(NavigatedToEventArgs args)
     {
         base.OnNavigatedTo(args);
-        Title = _chatAgent.Description;
+        Title = _chatAgent.id;
         _chatService.StartConversation(_chatAgent);
     }
 

@@ -3,7 +3,7 @@ namespace AiM.Data
 {
     public static class Constants
     {
-        public const string DatabaseFilename = "AiM.db3";
+        public const string DatabaseFilename = "AiMDB.db3";
 
         public const SQLite.SQLiteOpenFlags Flags =
             SQLite.SQLiteOpenFlags.ReadWrite |

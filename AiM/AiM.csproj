@@ -56,7 +56,20 @@
 		<PackageReference Include="OpenAI" Version="1.7.2" />
 		<PackageReference Include="Microsoft.Azure.CognitiveServices.Vision.ComputerVision" Version="7.0.1" />
 		<PackageReference Include="sqlite-net-pcl" Version="1.8.116" />
-		<PackageReference Include="SQLitePCLRaw.bundle_green" Version="2.1.4" />
+		<PackageReference Include="SQLitePCLRaw.bundle_green" Version="2.1.5" />
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+		<PackageReference Include="HtmlAgilityPack" Version="1.11.46" />
+		<PackageReference Include="Microsoft.Azure.Cosmos" Version="3.34.0" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <None Remove="Resources\Images\.DS_Store" />
+	</ItemGroup>
+	<ItemGroup>
+	  <BundleResource Include="Resources\Images\.DS_Store" />
+	  <BundleResource Include="Resources\Images\.DS_Store" />
+	</ItemGroup>
+	<ItemGroup>
+	  <MauiImage Remove="Resources\Images\.DS_Store" />
+	</ItemGroup>
 </Project>

@@ -14,26 +14,18 @@ namespace AiM.Services
         private Conversation _chat;
         public ObservableCollection<ChatData> ConversationData { get; set; }
 
-        public ChatService(IHttpClientFactory httpClientFactory, Settings settings)
+        public ChatService(IHttpClientFactory httpClientFactory)
         {
             ConversationData = new ObservableCollection<ChatData>();
-            _api = new OpenAIAPI(settings.OpenAiApiKey);
+            _api = new OpenAIAPI(Settings.OpenAiApiKey);
             _api.HttpClientFactory = httpClientFactory;
         }
 
-        public void StartConversation(Agent agent)
+        public void StartConversation(ChatPrompt agent)
         {
             _chat = _api.Chat.CreateConversation();
             _chat.Model = OpenAI_API.Models.Model.ChatGPTTurbo;
-            _chat.AppendSystemMessage(agent.SystemMessage);
-            if (agent.Examples != null)
-            {
-                foreach (var example in agent.Examples)
-                {
-                    _chat.AppendUserInput(example.UserInput);
-                    _chat.AppendExampleChatbotOutput(example.ChatbotOutput);
-                }
-            }
+            _chat.AppendSystemMessage(agent.prompt);
         }
 
         public void FinishConversation()

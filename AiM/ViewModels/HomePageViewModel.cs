@@ -9,8 +9,8 @@ namespace AiM.ViewModels
 {
     public class HomePageViewModel : BindableObject
     {
-        ObservableCollection<Agent> _agents;
-        public ObservableCollection<Agent> Agents
+        ObservableCollection<ChatPrompt> _agents;
+        public ObservableCollection<ChatPrompt> Agents
         {
             get { return _agents; }
             set
@@ -22,7 +22,7 @@ namespace AiM.ViewModels
 
         public HomePageViewModel()
         {
-            _agents = new ObservableCollection<Agent>();
+            _agents = new ObservableCollection<ChatPrompt>();
         }
 
         public async Task LoadItems(AiMDatabase database)
@@ -42,13 +42,14 @@ namespace AiM.ViewModels
 
         async void OnSelect(object obj)
         {
-            if (obj is not Agent agent)
+            if (obj is not ChatPrompt agent)
                 return;
             await Shell.Current.GoToAsync(nameof(ChatPage), true, new Dictionary<string, object>
             {
                 ["ChatAgent"] = agent
             });
         }
+
         public ICommand SettingsCommand => new Command<object>(OnSettings);
 
         async void OnSettings(object obj)

@@ -21,14 +21,16 @@ public static class MauiProgram
 		builder.Services.AddHttpClient();
 
         builder.Services.AddSingleton<AiMDatabase>();
-		builder.Services.AddSingleton<Settings>();
-
-		builder.Services.AddSingleton<ChatService>();
+	
+		builder.Services.AddTransient<ChatService>();
+		builder.Services.AddTransient<BingNewsSearchService>();
 
 		builder.Services.AddSingleton<HomePage>();
         builder.Services.AddSingleton<ChatPage>();
-        builder.Services.AddTransient<SettingsPage>();
-        builder.Services.AddTransient<OcrPage>();
+        builder.Services.AddSingleton<NewsPage>();
+        builder.Services.AddSingleton<SettingsPage>();
+        builder.Services.AddSingleton<OcrPage>();
+        builder.Services.AddSingleton<WebPage>();
 
 #if DEBUG
         builder.Logging.AddDebug();

@@ -5,36 +5,32 @@ namespace AiM.Views;
 
 public partial class SettingsPage : ContentPage
 {
-
-    AiMDatabase _database;
-    Settings _settings;
-
-    public SettingsPage(AiMDatabase database, Settings settings)
+    public SettingsPage(AiMDatabase database)
     {
         InitializeComponent();
-        _database = database;
-        _settings = settings;
     }
 
     protected override void OnNavigatedTo(NavigatedToEventArgs args)
     {
         base.OnNavigatedTo(args);
-        OpenAiApiKeyEntry.Text = _settings.OpenAiApiKey;
-        AzureCVEPEntry.Text = _settings.AzureCVEndPoint;
-        AzureCVKeyEntry.Text = _settings.AzureCVApiKey;
+        OpenAiApiKeyEntry.Text = Settings.OpenAiApiKey;
+        AzureCVEPEntry.Text = Settings.AzureCVEndPoint;
+        AzureCVKeyEntry.Text = Settings.AzureCVApiKey;
+        AzureBSEPEntry.Text = Settings.AzureBingSearchEndPoint;
+        AzureBSKeyEntry.Text = Settings.AzureBingSearchApiKey;
+        AzureDBEPEntry.Text = Settings.AzureCosmosDbEndPoint;
+        AzureDBKeyEntry.Text = Settings.AzureCosmosDbApiKey;
     }
 
     protected override void OnNavigatedFrom(NavigatedFromEventArgs args)
     {
         base.OnNavigatedFrom(args);
-        _settings.OpenAiApiKey = OpenAiApiKeyEntry.Text;
-        _settings.AzureCVEndPoint = AzureCVEPEntry.Text;
-        _settings.AzureCVApiKey = AzureCVKeyEntry.Text;
-    }
-
-    async void ResetBtn_Clicked(System.Object sender, System.EventArgs e)
-    {
-        await _database.ResetAgentsAsync();
-        await DisplayAlert("Information", "Chat agent list will be updated after App reload.", "OK");
+        Settings.OpenAiApiKey = OpenAiApiKeyEntry.Text;
+        Settings.AzureCVEndPoint = AzureCVEPEntry.Text;
+        Settings.AzureCVApiKey = AzureCVKeyEntry.Text;
+        Settings.AzureBingSearchEndPoint = AzureBSEPEntry.Text;
+        Settings.AzureBingSearchApiKey = AzureBSKeyEntry.Text;
+        Settings.AzureCosmosDbEndPoint = AzureDBEPEntry.Text;
+        Settings.AzureCosmosDbApiKey = AzureDBKeyEntry.Text;
     }
 }

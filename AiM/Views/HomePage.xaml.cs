@@ -8,7 +8,6 @@ namespace AiM.Views;
 public partial class HomePage : ContentPage
 {
     AiMDatabase _database;
-    public ObservableCollection<Agent> ChatAgents { get; set; } = new();
 
     public HomePage(AiMDatabase database)
     {
