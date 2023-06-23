@@ -4,7 +4,7 @@
              x:Class="AiM.Views.WebPage"
              Title="Web">
     <ContentPage.ToolbarItems>
-        <ToolbarItem Text="Abstract" Clicked="ToolbarItem_Clicked"/>
+        <ToolbarItem Text="Browser" Clicked="ToolbarItem_Clicked"/>
     </ContentPage.ToolbarItems>
     <WebView x:Name="PageWebView" />
 </ContentPage>

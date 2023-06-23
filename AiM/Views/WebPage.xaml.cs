@@ -34,11 +34,21 @@ public partial class WebPage : ContentPage, IQueryAttributable
     }
     async void ToolbarItem_Clicked(System.Object sender, System.EventArgs e)
     {
-        var web = new HtmlWeb();
-        var doc = await web.LoadFromWebAsync(_url);
+        try
+        {
+            Uri uri = new Uri(_url);
+            await Browser.Default.OpenAsync(uri, BrowserLaunchMode.External);
+        }
+        catch (Exception ex)
+        {
+            // An unexpected error occurred. No browser may be installed on the device.
+        }
 
-        string text = doc.DocumentNode.InnerText;
-        await Clipboard.SetTextAsync(text);
-        await DisplayAlert("Information", "Webpage text copied to clipboard.", "OK");
+        //var web = new HtmlWeb();
+        //var doc = await web.LoadFromWebAsync(_url);
+
+        //string text = doc.DocumentNode.InnerText;
+        //await Clipboard.SetTextAsync(text);
+        //await DisplayAlert("Information", "Webpage text copied to clipboard.", "OK");
     }
 }
